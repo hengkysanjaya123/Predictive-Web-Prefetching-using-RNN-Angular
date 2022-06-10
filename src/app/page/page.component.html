@@ -1,0 +1,13 @@
+<h2>{{currentPath.name}}</h2>
+<p>{{currentPath.description}}</p>
+
+
+<ng-container>
+  <div class="container">
+    <div class="row">
+        <span class="col-md" *ngFor="let image of currentPath.images">
+          <img src="{{image}}" alt="" width="150px">
+        </span>
+    </div>
+  </div>
+</ng-container>
