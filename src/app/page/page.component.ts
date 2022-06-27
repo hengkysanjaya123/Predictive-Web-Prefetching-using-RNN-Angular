@@ -20,7 +20,6 @@ export class PageComponent implements OnInit {
   ngOnInit(): void {
     this.countryService.getLocation().subscribe(loc => {
       this.currentLocation = loc;
-      console.log(this.currentLocation.country);
     });
     navigator.serviceWorker.ready.then(registration => {
       this._serviceWorker = registration.active;
@@ -28,10 +27,7 @@ export class PageComponent implements OnInit {
     this.route.params.subscribe(({path}) => {
       this.currentPath = this.pathService.get(path);
       if (this._serviceWorker) {
-        let randomPath = this.pathService.getPaths().filter(p => p.images != null && p.images.length > 0);
-        // @ts-ignore
-        randomPath = randomPath[Math.floor(Math.random() * randomPath.length)];
-        this._serviceWorker.postMessage({path: randomPath});
+        this._serviceWorker.postMessage({path: this.currentPath, country: this.currentLocation.country});
       }
     });
   }
