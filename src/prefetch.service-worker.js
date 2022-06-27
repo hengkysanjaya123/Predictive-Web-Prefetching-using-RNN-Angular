@@ -38,12 +38,24 @@ const predict = async (path, userId) => {
 
   const sessionIndex = tf.tensor1d([parseInt(userId)], "int32");
 
-  const result = model.predict({
-    cur_page: pageId,
-    session_index: sessionIndex,
-  });
-  const values = result.dataSync();
-  const orders = sortWithIndeces(values).slice(0, 5);
+  // call the API for prediction
+  const http = new XMLHttpRequest();
+  const url='http://localhost:8080/api/v1/prediction';
+  http.open("GET", url);
+  http.send();
+
+  http.onreadystatechange = function(){
+    if(this.readyState === 4 && this.status === 200){
+      console.log(http.responseText);
+    }
+  }
+
+  // const result = model.predict({
+  //   cur_page: pageId,
+  //   session_index: sessionIndex,
+  // });
+  // const values = result.dataSync();
+  // const orders = sortWithIndeces(values).slice(0, 5);
   return orders;
 };
 
