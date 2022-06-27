@@ -30,8 +30,8 @@ self.addEventListener("fetch", (event) => {
 // tf.loadGraphModel(MODEL_URL).then((m) => (model = m));
 
 const predict = async (path, country) => {
-  const pageIdx = pages.indexOf(path);
-  const countryIdx = countries.indexOf(country);
+  const pageIdx = pages.indexOf(path) / pages.length;
+  const countryIdx = countries.indexOf(country) / countries.length;
 
   console.log('calling API for predicting: path: ' + path + ' and country:' + country);
   console.log();
@@ -68,7 +68,7 @@ const prefetch = async (path, country, predictedInfo) => {
         });
         fetch(request).then((response) => {
           cache.put(request, response);
-          console.log('storing image to cache: ' + imageUrl);
+          // console.log('storing image to cache: ' + imageUrl);
         });
       });
     }
