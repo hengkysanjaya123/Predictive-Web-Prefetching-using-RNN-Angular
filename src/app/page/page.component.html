@@ -5,9 +5,9 @@
 <ng-container>
   <div class="container">
     <div class="row">
-        <span class="col-md" *ngFor="let image of currentPath.images">
-          <img src="{{image}}" alt="" width="150px">
-        </span>
+      <section>
+        <img src="{{image}}" alt="" width="150px" *ngFor="let image of currentPath.images" class="mb-2">
+      </section>
     </div>
   </div>
 </ng-container>
