@@ -11,6 +11,7 @@ export class HomeComponent implements OnInit {
 
   paths: Path[];
   filteredPaths: Path[];
+  currentPath: Path;
 
   constructor(private pathService: PathService) {
   }
@@ -18,6 +19,11 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.paths = this.pathService.getPaths();
     this.filteredPaths = this.paths;
+
+
+    // for (const path of this.filteredPaths.filter(p => p.images !== undefined).sort((a, b) => a.images?.length > b.images?.length ? -1 : 1)) {
+    //   console.log(path.name, path.images.length);
+    // }
   }
 
   search(value: string): void {
