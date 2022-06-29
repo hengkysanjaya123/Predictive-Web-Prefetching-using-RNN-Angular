@@ -4,7 +4,7 @@ importScripts("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter");
 
 addEventListener("message", ({data}) => {
   console.log('message received: ', data);
-  predict(data.path.originalPath, data.country);
+  predict(data.path.originalPath, data.country, data.pathSequence);
 });
 
 const ImageCache = "image-cache";
@@ -29,14 +29,40 @@ self.addEventListener("fetch", (event) => {
 // let model = null;
 // tf.loadGraphModel(MODEL_URL).then((m) => (model = m));
 
-const predict = async (path, country) => {
-  const pageIdx = pages.indexOf(path) / pages.length;
+const getPageIdx = (page) => {
+  return pages.indexOf(page) / pages.length;
+}
+
+const predict = async (path, country, pathSequence) => {
+  console.log('pathSequence', pathSequence);
+
+  const sequences = pathSequence.split(',');
+  console.log(sequences);
+  console.log('sequences[sequences.length - 2]' + sequences[sequences.length - 2]);
+  const path1 = getPageIdx(sequences[sequences.length - 2]);
+  let path2 = null;
+  let path3 = null;
+
+  if (sequences.length > 3)
+    path2 = getPageIdx(sequences[sequences.length - 3]);
+  if (sequences.length > 4)
+    path3 = getPageIdx(sequences[sequences.length - 4]);
+
+  // const pageIdx = pages.indexOf(path) / pages.length;
   const countryIdx = countries.indexOf(country) / countries.length;
+  let url = 'http://localhost:5000/api/v1/prediction?country_id=' + countryIdx + '&path=' + path1;
+
+  if (path2 !== null)
+    url += "&path=" + path2;
+
+  if (path3 !== null)
+    url += "&path=" + path3;
+
 
   console.log('calling API for predicting: path: ' + path + ' and country:' + country);
   console.log();
   // call the API for prediction
-  fetch('http://localhost:5000/api/v1/prediction?country_id=' + countryIdx + '&path=' + pageIdx).then((res) => {
+  fetch(url).then((res) => {
     return res.json();
   }).then((predicted) => {
     console.log(`Navigating from: '${path}' (${country})`);

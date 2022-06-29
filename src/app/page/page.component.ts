@@ -26,8 +26,20 @@ export class PageComponent implements OnInit {
     });
     this.route.params.subscribe(({path}) => {
       this.currentPath = this.pathService.get(path);
+
+      const pathSequence = sessionStorage.getItem('path');
+      if (pathSequence !== null && pathSequence !== undefined) {
+        sessionStorage.setItem('path', pathSequence + this.currentPath.originalPath + ',');
+      } else {
+        sessionStorage.setItem('path', this.currentPath.originalPath + ',');
+      }
+
       if (this._serviceWorker) {
-        this._serviceWorker.postMessage({path: this.currentPath, country: this.currentLocation.country});
+        this._serviceWorker.postMessage({
+          path: this.currentPath,
+          country: this.currentLocation.country,
+          pathSequence: sessionStorage.getItem('path')
+        });
       }
     });
   }
