@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Path, PathService } from '../../services/path/path.service';
 import { CountryService, Location } from '../../services/country/country.service';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-page',
@@ -20,18 +21,31 @@ export class PageComponent implements OnInit {
   ngOnInit(): void {
     this.countryService.getLocation().subscribe(loc => {
       this.currentLocation = loc;
-      console.log(this.currentLocation.country);
     });
     navigator.serviceWorker.ready.then(registration => {
       this._serviceWorker = registration.active;
     });
-    this.route.params.subscribe(({path}) => {
+    combineLatest([
+      this.route.queryParams,
+      this.route.params
+    ]).subscribe(([{prefetch}, {path}]) => {
       this.currentPath = this.pathService.get(path);
-      if (this._serviceWorker) {
-        let randomPath = this.pathService.getPaths().filter(p => p.images != null && p.images.length > 0);
-        // @ts-ignore
-        randomPath = randomPath[Math.floor(Math.random() * randomPath.length)];
-        this._serviceWorker.postMessage({path: randomPath});
+
+      const pathSequence = sessionStorage.getItem('path');
+      if (pathSequence !== null && pathSequence !== undefined) {
+        sessionStorage.setItem('path', pathSequence + this.currentPath.originalPath + ',');
+      } else {
+        sessionStorage.setItem('path', this.currentPath.originalPath + ',');
+      }
+
+      if (this._serviceWorker && prefetch !== 'false') {
+        this._serviceWorker.postMessage({
+          path: this.currentPath,
+          country: this.currentLocation.country,
+          pathSequence: sessionStorage.getItem('path')
+        });
+      } else {
+        console.log('prefetching disabled');
       }
     });
   }

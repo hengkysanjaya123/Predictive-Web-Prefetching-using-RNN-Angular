@@ -19,11 +19,14 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.paths = this.pathService.getPaths();
     this.filteredPaths = this.paths;
+    this.filteredPaths = this.filteredPaths.sort((a, b) => a.name > b.name ? 1 : -1);
 
+    for (const path of this.filteredPaths.filter(p => p.images !== undefined).sort((a, b) => a.images?.length > b.images?.length ? -1 : 1)) {
+      console.log(path.name, path.images.length);
+    }
 
-    // for (const path of this.filteredPaths.filter(p => p.images !== undefined).sort((a, b) => a.images?.length > b.images?.length ? -1 : 1)) {
-    //   console.log(path.name, path.images.length);
-    // }
+    console.log(this.filteredPaths.filter(p => p.images !== undefined).map(i => i.images.length).reduce((p, c) => p + c, 0));
+    console.log(this.filteredPaths.filter(p => p.images !== undefined).length);
   }
 
   search(value: string): void {
@@ -34,5 +37,6 @@ export class HomeComponent implements OnInit {
     } else {
       this.filteredPaths = this.paths.filter(p => p.name != null && p.name.toLowerCase().startsWith(value));
     }
+    this.filteredPaths = this.filteredPaths.sort((a, b) => a.name > b.name ? 1 : -1);
   }
 }

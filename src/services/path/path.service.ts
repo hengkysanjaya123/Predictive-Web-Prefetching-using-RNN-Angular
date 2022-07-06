@@ -556,6 +556,8 @@ export class PathService {
         '//live.staticflickr.com/65535/48616187531_5e86214e8d_w.jpg',
         '//live.staticflickr.com/65535/48616187731_e01d40479b_z.jpg',
         '//live.staticflickr.com/65535/48616187801_2d0acde4de_b.jpg',
+        '//live.staticflickr.com/65535/48616187801_2d0acde4de_b.jpg',
+        '//live.staticflickr.com/65535/48616187801_2d0acde4de_b.jpg',
         '//live.staticflickr.com/65535/48616333367_22f9d996e6_w.jpg',
         '//live.staticflickr.com/65535/48615837488_21ffc97e5f_z.jpg',
         '//live.staticflickr.com/65535/48615837758_5264d78c60_b.jpg',
