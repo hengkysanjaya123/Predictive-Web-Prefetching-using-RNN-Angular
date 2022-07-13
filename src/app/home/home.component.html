@@ -2,7 +2,7 @@
   <div class="col-md-12" style="background-color: #4a0d66">
     <div class="container-fluid">
       <div class="navbar-brand">
-        <h2 class="text-white py-2 px-0 mx-0">Predictive Web Pre-fetching using RNN</h2>
+        <h2 class="text-white py-2 px-0 mx-0"><a href="./" class="text-decoration-none text-white">Predictive Web Pre-fetching using RNN</a></h2>
       </div>
     </div>
   </div>
@@ -29,7 +29,8 @@
       </div>
     </div>
     <div class="col-md-9">
-      <router-outlet></router-outlet>
+      <h3 *ngIf="!(!!currentPath)">Welcome!</h3>
+      <router-outlet *ngIf="!!currentPath"></router-outlet>
     </div>
   </div>
 </div>

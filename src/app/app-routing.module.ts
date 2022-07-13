@@ -4,7 +4,9 @@ import { HomeComponent } from './home/home.component';
 import { PageComponent } from './page/page.component';
 
 const routes: Routes = [
-  {path: '', component: HomeComponent},
+  {
+    path: '', pathMatch: 'full', component: HomeComponent
+  },
   {path: ':path', component: PageComponent},
 ];
 
