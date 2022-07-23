@@ -4,8 +4,8 @@ importScripts("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter");
 
 addEventListener("message", ({data}) => {
   console.log('message received: ', data);
-  prefetch('/skills/id/221/', 'Indonesia', {path: '/skills/id/221/', probability: 0.99});
-  // predict(data.path.originalPath, data.country, data.pathSequence);
+  // prefetch('/skills/id/221/', 'Indonesia', {path: '/skills/id/221/', probability: 0.99});
+  predict(data.path.originalPath, data.country, data.pathSequence);
 });
 
 const ImageCache = "image-cache";

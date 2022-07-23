@@ -1,12 +1,12 @@
-<h2>{{currentPath.name}}</h2>
-<p>{{currentPath.description}}</p>
+<h2>{{currentPath?.name}}</h2>
+<p>{{currentPath?.description}}</p>
 
 
 <ng-container>
   <div class="container">
     <div class="row">
       <section>
-        <img src="{{image}}" alt="" width="150px" *ngFor="let image of currentPath.images" class="mb-2">
+        <img src="{{image}}" alt="" width="150px" *ngFor="let image of currentPath?.images" class="mb-2">
       </section>
     </div>
   </div>

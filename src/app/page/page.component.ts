@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Path, PathService } from '../../services/path/path.service';
-import { CountryService, Location } from '../../services/country/country.service';
-import { combineLatest } from 'rxjs';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {Path, PathService} from '../../services/path/path.service';
+import {CountryService, Location} from '../../services/country/country.service';
+import {combineLatest} from 'rxjs';
+import {AppService} from "../../services/app/app.service";
 
 @Component({
   selector: 'app-page',
@@ -13,23 +14,24 @@ export class PageComponent implements OnInit {
 
   currentPath: Path;
   private currentLocation: Location;
-  private _serviceWorker: ServiceWorker | null = null;
 
-  constructor(private route: ActivatedRoute, private pathService: PathService, private countryService: CountryService) {
+  // private _serviceWorker: ServiceWorker | null = null;
+
+  constructor(private route: ActivatedRoute, private pathService: PathService,
+              private countryService: CountryService, private appService: AppService) {
   }
 
   ngOnInit(): void {
-    this.countryService.getLocation().subscribe(loc => {
-      this.currentLocation = loc;
-    });
     navigator.serviceWorker.ready.then(registration => {
-      this._serviceWorker = registration.active;
+      this.appService.serviceWorker.next(registration.active);
     });
     combineLatest([
       this.route.queryParams,
-      this.route.params
-    ]).subscribe(([{prefetch}, {path}]) => {
+      this.route.params,
+      this.appService.currentLocation
+    ]).subscribe(([{prefetch}, {path}, loc]) => {
       this.currentPath = this.pathService.get(path);
+      this.currentLocation = loc;
 
       const pathSequence = sessionStorage.getItem('path');
       if (pathSequence !== null && pathSequence !== undefined) {
@@ -38,15 +40,19 @@ export class PageComponent implements OnInit {
         sessionStorage.setItem('path', this.currentPath.originalPath + ',');
       }
 
-      if (this._serviceWorker && prefetch !== 'false') {
-        this._serviceWorker.postMessage({
-          path: this.currentPath,
-          country: this.currentLocation.country,
-          pathSequence: sessionStorage.getItem('path')
-        });
-      } else {
-        console.log('prefetching disabled');
-      }
+      // console.log('prefetch', prefetch);
+      // console.log('_serviceWorker', this._serviceWorker);
+      this.appService.serviceWorker.subscribe(serviceWorker => {
+        if (serviceWorker && (prefetch === undefined || prefetch !== 'false')) {
+          serviceWorker.postMessage({
+            path: this.currentPath,
+            country: this.currentLocation.country,
+            pathSequence: sessionStorage.getItem('path')
+          });
+        } else {
+          console.log('prefetching disabled');
+        }
+      });
     });
   }
 
